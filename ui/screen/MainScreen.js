@@ -2,37 +2,25 @@ import { Image, StyleSheet, View} from 'react-native';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import BookAppointment from './BookAppointment';
-import ViewAppointment from './ViewAppointment';
+import BookAppointmentScreen from './BookAppointmentScreen';
+import ViewAppointmentScreen from './ViewAppointmentScreen';
+import useLabel from '../../language/useLabel';
+
 
 const MainScreen = () => {
   const Tab = createBottomTabNavigator();
+  const [bookAppointment, viewAppointment] = useLabel();
+
+  const tabBarIcon = ({ color }, image) => (
+    <Image source={image} style={{height: 25, width: 25, resizeMode: 'contain', tintColor: color}} />
+);
 
   return (
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            const imgBookAppointment = focused ? require('../../assets/book_filled.png') : require('../../assets/book.png');
-            const imgViewAppointment = focused ? require('../../assets/cal_filled.png') : require('../../assets/cal.png');
-            let finalImage;
-            if (route.name == "Book Appointment") {
-              finalImage = imgBookAppointment;
-            } else {
-              finalImage = imgViewAppointment;
-            }
-            return (
-              <View>
-                <Image
-                  source={finalImage}
-                  resizeMode="contain"
-                  style={{ width: 25 }}
-                />
-              </View>
-            );
-          },
           tabBarActiveTintColor: '#6364F3',
-          tabBarInactiveTintColor: 'gray',
+          tabBarInactiveTintColor: 'black',
           headerStyle: {
             backgroundColor: '#6364F3',
           },
@@ -41,8 +29,25 @@ const MainScreen = () => {
           }
         })}
       >
-        <Tab.Screen name="Book Appointment" component={BookAppointment} />
-        <Tab.Screen name="View Appointment" component={ViewAppointment} />
+          <Tab.Screen
+                                key={bookAppointment}
+                                options={{
+                                    tabBarIcon: tabBarProps => tabBarIcon(tabBarProps, require('../../assets/book.png')),
+  
+                                }}
+                                name={bookAppointment}
+                                component={BookAppointmentScreen}
+                            />
+         <Tab.Screen
+                                key={viewAppointment}
+                                options={{
+                                    tabBarIcon: tabBarProps => tabBarIcon(tabBarProps, require('../../assets/cal.png')),
+  
+                                }}
+                                name={viewAppointment}
+                                component={ViewAppointmentScreen}
+                            />
+        
       </Tab.Navigator>
     </NavigationContainer>
   );
@@ -50,9 +55,3 @@ const MainScreen = () => {
 
 export default MainScreen;
  
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    backgroundColor: 'red',
-  }
-});
